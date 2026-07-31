@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZBY Cargo — Pickup &amp; Delivery Across Uzbekistan</title>
+<link rel="icon" href="zby-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0d;
+    --charcoal:#181818;
+    --amber:#f5a623;
+    --amber-deep:#d98c0f;
+    --cream:#fff8ec;
+    --paper:#fcefd4;
+    --line: rgba(13,13,13,0.10);
+    --line-light: rgba(255,248,236,0.14);
+    --shadow: 0 20px 60px rgba(13,13,13,0.18);
+    --radius: 6px;
+    --display: 'Archivo Black', 'Arial Black', sans-serif;
+    --body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: var(--body);
+    background: var(--cream);
+    color: var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 28px;}
+
+  .eyebrow{
+    font-size:12.5px; font-weight:800; letter-spacing:.18em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:10px; margin-bottom:16px; color: var(--amber-deep);
+  }
+  .eyebrow::before{content:""; width:26px; height:2px; background: var(--amber-deep); display:inline-block;}
+  .eyebrow.on-dark{color:var(--amber);}
+  .eyebrow.on-dark::before{background:var(--amber);}
+
+  h1,h2,h3{font-family: var(--display); line-height:1.05; letter-spacing:-0.01em; text-transform:uppercase;}
+  h2{font-size:clamp(28px,4vw,44px);}
+  p{line-height:1.65;}
+
+  /* ============ HEADER ============ */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background: rgba(13,13,13,0.0);
+    transition: background .35s ease, box-shadow .35s ease, padding .35s ease;
+    padding: 20px 0;
+  }
+  header.scrolled{ background: rgba(13,13,13,0.96); box-shadow:0 6px 30px rgba(0,0,0,.25); padding:12px 0; backdrop-filter: blur(6px); }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand img{ width:44px; height:44px; border-radius:9px; }
+  .brand-name{ font-family:var(--display); color:#fff; font-size:19px; letter-spacing:.02em; }
+  .brand-name span{color:var(--amber);}
+
+  nav.main-nav{ display:flex; gap:6px; align-items:center; }
+  nav.main-nav a{
+    color:#efe6d6; font-weight:700; font-size:14px; padding:10px 16px; border-radius:999px;
+    transition: background .2s, color .2s;
+  }
+  nav.main-nav a:hover{ background: rgba(245,166,35,.14); color:var(--amber); }
+
+  .header-right{ display:flex; align-items:center; gap:14px; }
+
+  .lang-switch{ position:relative; }
+  .lang-btn{
+    display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16);
+    color:#efe6d6; padding:9px 12px; border-radius:999px; font-weight:800; font-size:13px; letter-spacing:.04em;
+  }
+  .lang-btn svg{ width:10px; height:10px; transition:transform .2s; }
+  .lang-menu{
+    position:absolute; top:calc(100% + 10px); right:0; background:#171717; border:1px solid rgba(255,255,255,.12);
+    border-radius:10px; overflow:hidden; min-width:140px; box-shadow:0 20px 40px rgba(0,0,0,.4);
+    opacity:0; visibility:hidden; transform:translateY(-6px); transition:all .18s ease;
+  }
+  .lang-switch.open .lang-menu{ opacity:1; visibility:visible; transform:translateY(0); }
+  .lang-switch.open .lang-btn svg{ transform:rotate(180deg); }
+  .lang-menu button{
+    display:block; width:100%; text-align:left; background:none; border:none; color:#efe6d6; padding:11px 14px;
+    font-size:13.5px; font-weight:700;
+  }
+  .lang-menu button:hover{ background:rgba(245,166,35,.14); color:var(--amber); }
+  .lang-menu button.active{ color:var(--amber); }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-weight:800; font-size:14px; letter-spacing:.02em; padding:13px 24px; border-radius:999px; border:2px solid transparent;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+    white-space:nowrap;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-amber{ background:var(--amber); color:var(--ink); }
+  .btn-amber:hover{ background:#ffb943; box-shadow:0 10px 24px rgba(245,166,35,.35); }
+  .btn-outline-dark{ border-color:rgba(255,255,255,.35); color:#fff; }
+  .btn-outline-dark:hover{ border-color:var(--amber); color:var(--amber); }
+  .btn-ink{ background:var(--ink); color:#fff; }
+  .btn-ink:hover{ background:#000; box-shadow:0 10px 24px rgba(0,0,0,.25); }
+
+  .menu-toggle{ display:none; background:none; border:none; color:#fff; }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative; background:var(--ink); color:#fff; padding:170px 0 130px;
+    overflow:hidden;
+  }
+  .hero-glow{
+    position:absolute; width:900px; height:900px; border-radius:50%;
+    background:radial-gradient(circle, rgba(245,166,35,.30) 0%, rgba(245,166,35,0) 62%);
+    top:-380px; right:-260px; pointer-events:none;
+  }
+  .hero-inner{ position:relative; z-index:2; display:grid; grid-template-columns:1.05fr .95fr; gap:50px; align-items:center; }
+  .hero h1{ font-size:clamp(34px,5.6vw,60px); margin-bottom:22px; }
+  .hero h1 .hl{ color:var(--amber); }
+  .hero p.sub{ font-size:17px; color:#cfc7b8; max-width:520px; margin-bottom:34px; }
+  .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  .route-card{
+    position:relative; background:var(--charcoal); border:1px solid rgba(255,255,255,.08); border-radius:20px;
+    padding:34px 30px 30px; box-shadow: var(--shadow);
+  }
+  .route-row{ display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+  .route-pin{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; font-size:16px; font-weight:800;
+  }
+  .route-pin.a{ background:var(--amber); color:var(--ink); }
+  .route-pin.b{ background:#2a2a2a; color:var(--amber); border:2px solid var(--amber); }
+  .route-text .rlabel{ font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:#9c9282; font-weight:800; }
+  .route-text .rvalue{ font-size:15px; font-weight:700; color:#f2ead9; }
+  .route-track{
+    position:relative; height:64px; margin-left:19px; border-left:2px dashed rgba(245,166,35,.45);
+  }
+  .route-track .pkg{
+    position:absolute; left:-13px; width:26px; height:26px; background:var(--amber); border-radius:7px;
+    display:flex; align-items:center; justify-content:center; font-size:13px;
+    animation: travel 3.2s ease-in-out infinite;
+    box-shadow:0 6px 16px rgba(245,166,35,.5);
+  }
+  @keyframes travel{
+    0%{ top:0; }
+    50%{ top:calc(100% - 26px); }
+    100%{ top:0; }
+  }
+  .route-meta{ display:flex; justify-content:space-between; margin-top:18px; padding-top:18px; border-top:1px solid rgba(255,255,255,.08); }
+  .route-meta div{ text-align:left; }
+  .route-meta .num{ font-family:var(--display); font-size:20px; color:var(--amber); }
+  .route-meta .lbl{ font-size:11.5px; color:#9c9282; font-weight:700; letter-spacing:.03em; }
+
+  /* wing divider */
+  .divider{ display:block; width:100%; height:56px; }
+  .divider path{ transition: fill .3s; }
+
+  /* ============ STATS ============ */
+  .stats{ background:var(--amber); padding:46px 0; }
+  .stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; text-align:center; }
+  .stats-grid .num{ font-family:var(--display); font-size:clamp(26px,3.4vw,38px); color:var(--ink); }
+  .stats-grid .lbl{ font-size:13px; font-weight:700; color:rgba(13,13,13,.72); margin-top:4px; }
+
+  /* ============ SECTION GENERIC ============ */
+  section.block{ padding:100px 0; }
+  .block-head{ max-width:640px; margin-bottom:56px; }
+  .block-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+
+  /* ============ SERVICES ============ */
+  .services{ background:var(--cream); }
+  .service-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .service-card{
+    background:#fff; border:1px solid var(--line); border-radius:18px; padding:34px 28px;
+    position:relative; overflow:hidden; transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .service-card:hover{ transform:translateY(-6px); box-shadow: var(--shadow); }
+  .service-card::before{
+    content:""; position:absolute; top:0; right:0; width:120px; height:120px; border-radius:0 0 0 120px;
+    background:var(--paper);
+  }
+  .service-icon{
+    width:54px; height:54px; border-radius:14px; background:var(--ink); color:var(--amber);
+    display:flex; align-items:center; justify-content:center; margin-bottom:22px; position:relative; z-index:1;
+  }
+  .service-card h3{ font-size:19px; margin-bottom:12px; position:relative; z-index:1; }
+  .service-card p{ font-size:14.5px; color:#5a5245; position:relative; z-index:1; }
+
+  /* ============ HOW IT WORKS ============ */
+  .how{ background:var(--ink); color:#fff; }
+  .how .block-head p{ color:#cfc7b8; }
+  .how-track{ position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+  .how-track::before{
+    content:""; position:absolute; top:27px; left:6%; right:6%; height:2px;
+    background:repeating-linear-gradient(90deg, rgba(245,166,35,.55) 0 10px, transparent 10px 20px);
+  }
+  .how-step{ position:relative; }
+  .how-num{
+    width:56px; height:56px; border-radius:50%; background:var(--charcoal); border:2px solid var(--amber);
+    color:var(--amber); font-family:var(--display); font-size:20px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:22px; position:relative; z-index:1;
+  }
+  .how-step h3{ font-size:16.5px; margin-bottom:10px; color:#fff; }
+  .how-step p{ font-size:14px; color:#b7ad9c; }
+
+  /* ============ WHY ============ */
+  .why{ background:var(--cream); }
+  .why-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+  .why-card{ display:flex; gap:18px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px; }
+  .why-icon{
+    flex-shrink:0; width:46px; height:46px; border-radius:12px; background:var(--paper); color:var(--amber-deep);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .why-card h3{ font-size:16.5px; margin-bottom:8px; }
+  .why-card p{ font-size:14px; color:#5a5245; }
+
+  /* ============ COVERAGE ============ */
+  .coverage{ background:var(--paper); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{
+    background:#fff; border:1px solid var(--line); padding:10px 20px; border-radius:999px; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .chip::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--amber-deep); }
+
+  /* ============ CTA BANNER ============ */
+  .cta-banner{
+    background:var(--ink); color:#fff; padding:80px 0; position:relative; overflow:hidden;
+  }
+  .cta-banner::after{
+    content:""; position:absolute; width:600px; height:600px; border-radius:50%; right:-200px; top:-260px;
+    background:radial-gradient(circle, rgba(245,166,35,.22), transparent 60%);
+  }
+  .cta-inner{ position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; }
+  .cta-inner h2{ font-size:clamp(24px,3.4vw,36px); }
+  .cta-inner p{ color:#cfc7b8; margin-top:10px; max-width:440px; }
+
+  /* ============ CONTACT ============ */
+  .contact{ background:var(--cream); }
+  .contact-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:40px; }
+  form.contact-form{ background:#fff; border:1px solid var(--line); border-radius:18px; padding:34px; box-shadow:var(--shadow); }
+  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field.full{ grid-column:1/-1; }
+  .field label{ font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#5a5245; }
+  .field input, .field textarea{
+    border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; font-family:inherit; font-size:14.5px;
+    background:var(--cream); transition:border-color .2s, background .2s;
+  }
+  .field input:focus, .field textarea:focus{ outline:none; border-color:var(--amber); background:#fff; }
+  .field textarea{ resize:vertical; min-height:90px; }
+  .contact-form .btn{ width:100%; margin-top:6px; padding:15px; font-size:15px; }
+  .form-note{ font-size:12.5px; color:#8a8272; margin-top:12px; text-align:center; }
+
+  .info-card{ background:var(--ink); color:#fff; border-radius:18px; padding:34px; display:flex; flex-direction:column; gap:22px; }
+  .info-row{ display:flex; gap:16px; align-items:flex-start; }
+  .info-icon{ width:40px; height:40px; border-radius:10px; background:rgba(245,166,35,.15); color:var(--amber); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .info-row .lbl{ font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:#a89f8d; font-weight:800; margin-bottom:3px; }
+  .info-row .val{ font-size:15px; font-weight:700; }
+  .info-map{ margin-top:auto; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.1); }
+
+  /* ============ FOOTER ============ */
+  footer{ background:#0a0a0a; color:#cfc7b8; padding:56px 0 26px; }
+  .footer-top{ display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:40px; padding-bottom:36px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .footer-brand .brand{ margin-bottom:14px; }
+  .footer-brand p{ font-size:14px; max-width:280px; color:#9c9282; }
+  .footer-col h4{ font-size:12.5px; text-transform:uppercase; letter-spacing:.1em; color:#fff; margin-bottom:16px; font-weight:800; }
+  .footer-col a{ display:block; font-size:14px; color:#a89f8d; padding:6px 0; transition:color .2s; }
+  .footer-col a:hover{ color:var(--amber); }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:22px; flex-wrap:wrap; gap:14px; font-size:13px; color:#7a7263; }
+  .footer-lang{ display:flex; gap:8px; }
+  .footer-lang button{ background:none; border:1px solid rgba(255,255,255,.15); color:#a89f8d; padding:6px 12px; border-radius:999px; font-size:12.5px; font-weight:700; }
+  .footer-lang button.active{ border-color:var(--amber); color:var(--amber); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 980px){
+    nav.main-nav{ display:none; }
+    .menu-toggle{ display:flex; }
+    .hero-inner{ grid-template-columns:1fr; }
+    .stats-grid{ grid-template-columns:repeat(2,1fr); gap:28px; }
+    .service-grid{ grid-template-columns:1fr; }
+    .how-track{ grid-template-columns:1fr 1fr; row-gap:36px; }
+    .how-track::before{ display:none; }
+    .why-grid{ grid-template-columns:1fr; }
+    .contact-grid{ grid-template-columns:1fr; }
+    .footer-top{ grid-template-columns:1fr; gap:28px; }
+    .form-row{ grid-template-columns:1fr; }
+  }
+  @media (max-width:520px){
+    .stats-grid{ grid-template-columns:1fr 1fr; }
+    .hero{ padding:150px 0 90px; }
+    section.block{ padding:70px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .route-track .pkg{ animation:none; top:calc(50% - 13px); }
+    *{ scroll-behavior:auto !important; }
+  }
+
+  /* Mobile nav drawer */
+  .mobile-nav{
+    position:fixed; inset:0; background:rgba(10,10,10,.98); z-index:1200; display:flex; flex-direction:column;
+    padding:26px 28px; transform:translateX(100%); transition:transform .3s ease; gap:6px;
+  }
+  .mobile-nav.open{ transform:translateX(0); }
+  .mobile-nav-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+  .mobile-nav a{ color:#efe6d6; font-family:var(--display); font-size:24px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.08); text-transform:uppercase; }
+  .close-btn{ background:none; border:none; color:#fff; font-size:28px; }
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header id="siteHeader">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand">
+      <img src="zby-logo.jpg" alt="ZBY Cargo logo">
+      <span class="brand-name">ZBY <span>CARGO</span></span>
+    </a>
+    <nav class="main-nav">
+      <a href="#services" data-i18n="nav_services">Services</a>
+      <a href="#how" data-i18n="nav_how">How It Works</a>
+      <a href="#why" data-i18n="nav_why">Why Us</a>
+      <a href="#coverage" data-i18n="nav_coverage">Coverage</a>
+      <a href="#contact" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch">
+        <button class="lang-btn" id="langBtn">
+          <span id="langBtnLabel">UZ</span>
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <button data-lang="uz">O'zbekcha</button>
+          <button data-lang="ru">Русский</button>
+          <button data-lang="en">English</button>
+        </div>
+      </div>
+      <a href="#contact" class="btn btn-amber" data-i18n="nav_cta">Get a Quote</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <svg width="26" height="20" viewBox="0 0 26 20" fill="none"><path d="M0 1H26M0 10H26M0 19H26" stroke="white" stroke-width="2"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-top">
+    <div class="brand">
+      <img src="zby-logo.jpg" alt="ZBY Cargo logo" style="width:38px;height:38px;">
+      <span class="brand-name" style="font-size:17px;">ZBY <span>CARGO</span></span>
+    </div>
+    <button class="close-btn" id="closeMenu">&times;</button>
+  </div>
+  <a href="#services" data-i18n="nav_services">Services</a>
+  <a href="#how" data-i18n="nav_how">How It Works</a>
+  <a href="#why" data-i18n="nav_why">Why Us</a>
+  <a href="#coverage" data-i18n="nav_coverage">Coverage</a>
+  <a href="#contact" data-i18n="nav_contact">Contact</a>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+  <div class="wrap hero-inner">
+    <div>
+      <div class="eyebrow on-dark" data-i18n="hero_eyebrow">Pickup &amp; Delivery Across Uzbekistan</div>
+      <h1 data-i18n-html="hero_title">We pick it up.<br>You choose <span class="hl">where it lands.</span></h1>
+      <p class="sub" data-i18n="hero_sub">Tell us what you're sending and where it needs to go — our couriers handle the rest, from your door to theirs, anywhere in Uzbekistan.</p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn btn-amber" data-i18n="hero_cta1">Get a Quote</a>
+        <a href="#how" class="btn btn-outline-dark" data-i18n="hero_cta2">See How It Works</a>
+      </div>
+    </div>
+
+    <div class="route-card">
+      <div class="route-row">
+        <div class="route-pin a">A</div>
+        <div class="route-text">
+          <div class="rlabel" data-i18n="route_pickup_label">Pickup</div>
+          <div class="rvalue" data-i18n="route_pickup_value">Your address, Tashkent</div>
+        </div>
+      </div>
+      <div class="route-track"><div class="pkg">📦</div></div>
+      <div class="route-row" style="margin-bottom:0;">
+        <div class="route-pin b">B</div>
+        <div class="route-text">
+          <div class="rlabel" data-i18n="route_dropoff_label">Delivery</div>
+          <div class="rvalue" data-i18n="route_dropoff_value">Anywhere you choose</div>
+        </div>
+      </div>
+      <div class="route-meta">
+        <div><div class="num">25 min</div><div class="lbl" data-i18n="route_meta1">avg. pickup</div></div>
+        <div><div class="num">120+</div><div class="lbl" data-i18n="route_meta2">cities reached</div></div>
+        <div><div class="num">6 yrs</div><div class="lbl" data-i18n="route_meta3">on the road</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<svg class="divider" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,0 C 80,55 160,58 220,30 C 260,10 300,10 340,30 C 380,50 430,55 480,32 C 520,14 560,14 600,32 C 650,54 700,58 750,30 C 790,10 830,10 870,30 C 920,54 980,58 1030,32 C 1070,14 1110,16 1150,32 C 1170,40 1185,44 1200,42 L1200,60 L0,60 Z" fill="#f5a623"/></svg>
+
+<!-- ===================== STATS ===================== -->
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div><div class="num">120+</div><div class="lbl" data-i18n="stat1_label">Cities &amp; districts covered</div></div>
+    <div><div class="num">25 min</div><div class="lbl" data-i18n="stat2_label">Average pickup time</div></div>
+    <div><div class="num">6 <span data-i18n="stat3_suffix">yrs</span></div><div class="lbl" data-i18n="stat3_label">In business</div></div>
+    <div><div class="num">48,000+</div><div class="lbl" data-i18n="stat4_label">Parcels delivered</div></div>
+  </div>
+</section>
+<svg class="divider" viewBox="0 0 1200 60" preserveAspectRatio="none" style="transform:scaleY(-1);"><path d="M0,0 C 80,55 160,58 220,30 C 260,10 300,10 340,30 C 380,50 430,55 480,32 C 520,14 560,14 600,32 C 650,54 700,58 750,30 C 790,10 830,10 870,30 C 920,54 980,58 1030,32 C 1070,14 1110,16 1150,32 C 1170,40 1185,44 1200,42 L1200,60 L0,60 Z" fill="#fff8ec"/></svg>
+
+<!-- ===================== SERVICES ===================== -->
+<section class="block services" id="services">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="eyebrow" data-i18n="services_eyebrow">What We Do</div>
+      <h2 data-i18n="services_title">Our Services</h2>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 data-i18n="service1_title">Local Pickup &amp; Delivery</h3>
+        <p data-i18n="service1_desc">Same-day pickup and delivery within your city, door to door.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M2 17h13V6H2v11zm13-8h4l3 4v4h-7V9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6" cy="19" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="19" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
+        </div>
+        <h3 data-i18n="service2_title">Intercity Cargo</h3>
+        <p data-i18n="service2_desc">Reliable shipping between cities and regions across Uzbekistan.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 11-13h-8l1-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 data-i18n="service3_title">Express Same-Day</h3>
+        <p data-i18n="service3_desc">Urgent parcel? We collect within the hour and rush it straight to its destination.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="block how" id="how">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="eyebrow on-dark" data-i18n="how_eyebrow">The Process</div>
+      <h2 data-i18n="how_title">How It Works</h2>
+    </div>
+    <div class="how-track">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <h3 data-i18n="how1_title">Request a pickup</h3>
+        <p data-i18n="how1_desc">Tell us the pickup address, the drop-off address, and what you're sending.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <h3 data-i18n="how2_title">We collect it</h3>
+        <p data-i18n="how2_desc">A ZBY courier arrives at your door, checks the parcel, and takes it into care.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <h3 data-i18n="how3_title">It's on the way</h3>
+        <p data-i18n="how3_desc">Your parcel moves straight to its destination — no unnecessary stops.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">4</div>
+        <h3 data-i18n="how4_title">Delivered</h3>
+        <p data-i18n="how4_desc">We hand it over and confirm with you that everything arrived safely.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY US ===================== -->
+<section class="block why" id="why">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="eyebrow" data-i18n="why_eyebrow">Why ZBY</div>
+      <h2 data-i18n="why_title">Why Companies Choose ZBY</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.8"/></svg></div>
+        <div><h3 data-i18n="why1_title">Real people, real care</h3><p data-i18n="why1_desc">Every parcel is handled by a courier who's accountable for it start to finish.</p></div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C7 2 3 6 3 10c0 6 9 12 9 12s9-6 9-12c0-4-4-8-9-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <div><h3 data-i18n="why2_title">Full country coverage</h3><p data-i18n="why2_desc">From Tashkent to Nukus, we reach cities and districts across Uzbekistan.</p></div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M12 3v18" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg></div>
+        <div><h3 data-i18n="why3_title">Transparent pricing</h3><p data-i18n="why3_desc">You know the cost before we pick anything up. No surprises.</p></div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v12l-8 6-8-6V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+        <div><h3 data-i18n="why4_title">Careful handling</h3><p data-i18n="why4_desc">Fragile, bulky, or urgent — we treat every parcel like it's the only one we're carrying.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COVERAGE ===================== -->
+<section class="block coverage" id="coverage">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="eyebrow" data-i18n="coverage_eyebrow">Coverage</div>
+      <h2 data-i18n="coverage_title">Where We Work</h2>
+      <p data-i18n="coverage_sub" style="margin-top:12px; color:#5a5245;">ZBY couriers are on the road across these regions — and growing.</p>
+    </div>
+    <div class="chip-row">
+      <div class="chip">Toshkent</div>
+      <div class="chip">Samarqand</div>
+      <div class="chip">Buxoro</div>
+      <div class="chip">Andijon</div>
+      <div class="chip">Namangan</div>
+      <div class="chip">Farg'ona</div>
+      <div class="chip">Nukus</div>
+      <div class="chip">Urganch</div>
+      <div class="chip">Qarshi</div>
+      <div class="chip">Termiz</div>
+      <div class="chip">Jizzax</div>
+      <div class="chip">Navoiy</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA BANNER ===================== -->
+<section class="cta-banner">
+  <div class="wrap cta-inner">
+    <div>
+      <h2 data-i18n="cta_title">Have Something To Send?</h2>
+      <p data-i18n="cta_sub">Tell us where it's going and we'll take care of the rest.</p>
+    </div>
+    <a href="#contact" class="btn btn-amber" data-i18n="cta_button">Get a Quote</a>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section class="block contact" id="contact">
+  <div class="wrap">
+    <div class="block-head">
+      <div class="eyebrow" data-i18n="contact_eyebrow">Get In Touch</div>
+      <h2 data-i18n="contact_title">Let's Get Your Parcel Moving</h2>
+      <p data-i18n="contact_sub" style="margin-top:12px; color:#5a5245;">Fill in the details and a ZBY coordinator will call you back to confirm pickup.</p>
+    </div>
+    <div class="contact-grid">
+      <form class="contact-form" id="quoteForm">
+        <div class="form-row">
+          <div class="field"><label data-i18n="form_name">Name</label><input type="text" required></div>
+          <div class="field"><label data-i18n="form_phone">Phone Number</label><input type="tel" required placeholder="+998 __ ___ __ __"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label data-i18n="form_pickup">Pickup Address</label><input type="text" required></div>
+          <div class="field"><label data-i18n="form_dropoff">Drop-off Address</label><input type="text" required></div>
+        </div>
+        <div class="field full" style="margin-bottom:16px;">
+          <label data-i18n="form_message">What Are You Sending?</label>
+          <textarea></textarea>
+        </div>
+        <button type="submit" class="btn btn-ink" data-i18n="form_submit">Request Pickup</button>
+        <div class="form-note" data-i18n="form_note">This is a demo form — no data is sent anywhere yet.</div>
+      </form>
+
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C7 2 3 6 3 10c0 6 9 12 9 12s9-6 9-12c0-4-4-8-9-8z" stroke="currentColor" stroke-width="1.8"/></svg></div>
+          <div><div class="lbl" data-i18n="info_address_label">Address</div><div class="val" data-i18n="info_address_value">Tashkent, Uzbekistan</div></div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4h4l2 5-2.5 2a12 12 0 006 6l2-2.5 5 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+          <div><div class="lbl" data-i18n="info_phone_label">Phone</div><div class="val">+998 90 123 45 67</div></div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 5h18v14H3V5z" stroke="currentColor" stroke-width="1.6"/><path d="M3 6l9 7 9-7" stroke="currentColor" stroke-width="1.6"/></svg></div>
+          <div><div class="lbl" data-i18n="info_email_label">Email</div><div class="val">info@zbycargo.uz</div></div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.6"/></svg></div>
+          <div><div class="lbl" data-i18n="info_hours_label">Hours</div><div class="val" data-i18n="info_hours_value">Mon–Sat, 9:00–19:00</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand">
+          <img src="zby-logo.jpg" alt="ZBY Cargo logo" style="width:40px;height:40px;">
+          <span class="brand-name" style="font-size:18px;">ZBY <span>CARGO</span></span>
+        </div>
+        <p data-i18n="footer_tagline">Pickup &amp; delivery, anywhere in Uzbekistan.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_nav_heading">Navigate</h4>
+        <a href="#services" data-i18n="nav_services">Services</a>
+        <a href="#how" data-i18n="nav_how">How It Works</a>
+        <a href="#why" data-i18n="nav_why">Why Us</a>
+        <a href="#contact" data-i18n="nav_contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_contact_heading">Contact</h4>
+        <a href="tel:+998901234567">+998 97 898 60 06</a>
+        <a href="mailto:info@zbycargo.uz">abbos.ahtamov@mail.ru</a>
+        <a data-i18n="info_address_value" href="#contact">Samarkand, Uzbekistan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div data-i18n="footer_copyright">© 2026 ZBY Cargo. All rights reserved.</div>
+      <div class="footer-lang" id="footerLang">
+        <button data-lang="uz">UZ</button>
+        <button data-lang="ru">RU</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= TRANSLATIONS ================= */
+const translations = {
+  en: {
+    nav_services:"Services", nav_how:"How It Works", nav_why:"Why Us", nav_coverage:"Coverage", nav_contact:"Contact", nav_cta:"Get a Quote",
+    hero_eyebrow:"Pickup & Delivery Across Uzbekistan",
+    hero_title:"We pick it up.<br>You choose <span class=\"hl\">where it lands.</span>",
+    hero_sub:"Tell us what you're sending and where it needs to go — our couriers handle the rest, from your door to theirs, anywhere in Uzbekistan.",
+    hero_cta1:"Get a Quote", hero_cta2:"See How It Works",
+    route_pickup_label:"Pickup", route_pickup_value:"Your address, Tashkent",
+    route_dropoff_label:"Delivery", route_dropoff_value:"Anywhere you choose",
+    route_meta1:"avg. pickup", route_meta2:"cities reached", route_meta3:"on the road",
+    stat1_label:"Cities & districts covered", stat2_label:"Average pickup time", stat3_suffix:"yrs", stat3_label:"In business", stat4_label:"Parcels delivered",
+    services_eyebrow:"What We Do", services_title:"Our Services",
+    service1_title:"Local Pickup & Delivery", service1_desc:"Same-day pickup and delivery within your city, door to door.",
+    service2_title:"Intercity Cargo", service2_desc:"Reliable shipping between cities and regions across Uzbekistan.",
+    service3_title:"Express Same-Day", service3_desc:"Urgent parcel? We collect within the hour and rush it straight to its destination.",
+    how_eyebrow:"The Process", how_title:"How It Works",
+    how1_title:"Request a pickup", how1_desc:"Tell us the pickup address, the drop-off address, and what you're sending.",
+    how2_title:"We collect it", how2_desc:"A ZBY courier arrives at your door, checks the parcel, and takes it into care.",
+    how3_title:"It's on the way", how3_desc:"Your parcel moves straight to its destination — no unnecessary stops.",
+    how4_title:"Delivered", how4_desc:"We hand it over and confirm with you that everything arrived safely.",
+    why_eyebrow:"Why ZBY", why_title:"Why Companies Choose ZBY",
+    why1_title:"Real people, real care", why1_desc:"Every parcel is handled by a courier who's accountable for it start to finish.",
+    why2_title:"Full country coverage", why2_desc:"From Tashkent to Nukus, we reach cities and districts across Uzbekistan.",
+    why3_title:"Transparent pricing", why3_desc:"You know the cost before we pick anything up. No surprises.",
+    why4_title:"Careful handling", why4_desc:"Fragile, bulky, or urgent — we treat every parcel like it's the only one we're carrying.",
+    coverage_eyebrow:"Coverage", coverage_title:"Where We Work", coverage_sub:"ZBY couriers are on the road across these regions — and growing.",
+    cta_title:"Have Something To Send?", cta_sub:"Tell us where it's going and we'll take care of the rest.", cta_button:"Get a Quote",
+    contact_eyebrow:"Get In Touch", contact_title:"Let's Get Your Parcel Moving", contact_sub:"Fill in the details and a ZBY coordinator will call you back to confirm pickup.",
+    form_name:"Name", form_phone:"Phone Number", form_pickup:"Pickup Address", form_dropoff:"Drop-off Address", form_message:"What Are You Sending?", form_submit:"Request Pickup",
+    form_note:"This is a demo form — no data is sent anywhere yet.",
+    info_address_label:"Address", info_address_value:"Tashkent, Uzbekistan", info_phone_label:"Phone", info_email_label:"Email", info_hours_label:"Hours", info_hours_value:"Mon–Sat, 9:00–19:00",
+    footer_nav_heading:"Navigate", footer_contact_heading:"Contact",
+    footer_tagline:"Pickup & delivery, anywhere in Uzbekistan.", footer_copyright:"© 2026 ZBY Cargo. All rights reserved."
+  },
+  uz: {
+    nav_services:"Xizmatlar", nav_how:"Qanday ishlaydi", nav_why:"Nega aynan biz", nav_coverage:"Qamrov", nav_contact:"Aloqa", nav_cta:"Narx so'rash",
+    hero_eyebrow:"O'zbekiston bo'ylab olib ketish va yetkazib berish",
+    hero_title:"Biz olib ketamiz.<br>Siz <span class=\"hl\">qayerga borishini</span> tanlaysiz.",
+    hero_sub:"Nimani va qayerga yuborishni ayting — qolganini kuryerlarimiz bajaradi: eshigingizdan kerakli manzilgacha, O'zbekistonning istalgan nuqtasida.",
+    hero_cta1:"Narx so'rash", hero_cta2:"Qanday ishlashini ko'rish",
+    route_pickup_label:"Olib ketish", route_pickup_value:"Sizning manzilingiz, Toshkent",
+    route_dropoff_label:"Yetkazish", route_dropoff_value:"Siz tanlagan istalgan manzil",
+    route_meta1:"o'rtacha vaqt", route_meta2:"shahar qamrovi", route_meta3:"yo'lda",
+    stat1_label:"Shahar va tumanlar qamrovi", stat2_label:"O'rtacha olib ketish vaqti", stat3_suffix:"yil", stat3_label:"Bozordagi tajriba", stat4_label:"Yetkazilgan jo'natmalar",
+    services_eyebrow:"Nima qilamiz", services_title:"Xizmatlarimiz",
+    service1_title:"Shahar ichida olib ketish va yetkazish", service1_desc:"Shahar ichida bir kunda, eshikdan eshikkacha olib ketish va yetkazish.",
+    service2_title:"Shaharlararo yuk tashish", service2_desc:"O'zbekiston shahar va viloyatlari o'rtasida ishonchli yuk tashish.",
+    service3_title:"Tezkor (bir kunlik) yetkazish", service3_desc:"Shoshilinch jo'natma bormi? Bir soat ichida olib ketamiz va to'g'ridan-to'g'ri manzilga yetkazamiz.",
+    how_eyebrow:"Jarayon", how_title:"Bu Qanday Ishlaydi",
+    how1_title:"Buyurtma bering", how1_desc:"Olib ketish manzili, yetkazish manzili va nima yuborayotganingizni ayting.",
+    how2_title:"Biz olib ketamiz", how2_desc:"ZBY kuryeri eshigingizga keladi, jo'natmani tekshiradi va mas'uliyatga oladi.",
+    how3_title:"Yo'lda", how3_desc:"Jo'natmangiz to'g'ridan-to'g'ri manzilga boradi — ortiqcha to'xtashlarsiz.",
+    how4_title:"Yetkazib berildi", how4_desc:"Jo'natmani topshiramiz va hammasi omon-eson yetib kelganini siz bilan tasdiqlaymiz.",
+    why_eyebrow:"Nega ZBY", why_title:"Kompaniyalar Nega ZBY'ni Tanlaydi",
+    why1_title:"Har bir jo'natma — mas'ul qo'llarda", why1_desc:"Har bir jo'natma boshidan oxirigacha javobgar kuryer tomonidan olib boriladi.",
+    why2_title:"Butun mamlakat bo'ylab xizmat", why2_desc:"Toshkentdan Nukusgacha — O'zbekistonning barcha shahar va tumanlariga yetib boramiz.",
+    why3_title:"Shaffof narxlar", why3_desc:"Hali olib ketishdan oldin narxni bilasiz. Hech qanday kutilmagan holat yo'q.",
+    why4_title:"Ehtiyotkorlik bilan tashish", why4_desc:"Mo'rt, katta hajmli yoki shoshilinch — har bir jo'natmani yagona jo'natmadek ehtiyot qilamiz.",
+    coverage_eyebrow:"Qamrov", coverage_title:"Biz Qayerda Ishlaymiz", coverage_sub:"ZBY kuryerlari ushbu hududlarda faoliyat yuritadi — va doimo kengaymoqda.",
+    cta_title:"Yuboradigan Narsangiz Bormi?", cta_sub:"Qayerga borishini ayting, qolganini biz bajaramiz.", cta_button:"Narx so'rash",
+    contact_eyebrow:"Bog'laning", contact_title:"Jo'natmangizni Yo'lga Chiqaramiz", contact_sub:"Ma'lumotlarni to'ldiring, ZBY operatori siz bilan bog'lanib, olib ketishni tasdiqlaydi.",
+    form_name:"Ism", form_phone:"Telefon raqami", form_pickup:"Olib ketish manzili", form_dropoff:"Yetkazish manzili", form_message:"Nima yuboryapsiz?", form_submit:"So'rov yuborish",
+    form_note:"Bu — demo shakl, ma'lumotlar hozircha hech qayerga yuborilmaydi.",
+    info_address_label:"Manzil", info_address_value:"Toshkent, O'zbekiston", info_phone_label:"Telefon", info_email_label:"Email", info_hours_label:"Ish vaqti", info_hours_value:"Dush–Shan, 9:00–19:00",
+    footer_nav_heading:"Bo'limlar", footer_contact_heading:"Aloqa",
+    footer_tagline:"O'zbekistonning istalgan nuqtasida olib ketish va yetkazib berish.", footer_copyright:"© 2026 ZBY Cargo. Barcha huquqlar himoyalangan."
+  },
+  ru: {
+    nav_services:"Услуги", nav_how:"Как это работает", nav_why:"Почему мы", nav_coverage:"География", nav_contact:"Контакты", nav_cta:"Узнать стоимость",
+    hero_eyebrow:"Забор и доставка грузов по Узбекистану",
+    hero_title:"Мы забираем.<br>Вы выбираете, <span class=\"hl\">куда доставить.</span>",
+    hero_sub:"Скажите, что и куда нужно отправить — остальное сделают наши курьеры: от вашей двери до нужного адреса в любой точке Узбекистана.",
+    hero_cta1:"Узнать стоимость", hero_cta2:"Посмотреть как это работает",
+    route_pickup_label:"Забор", route_pickup_value:"Ваш адрес, Ташкент",
+    route_dropoff_label:"Доставка", route_dropoff_value:"Любой адрес по вашему выбору",
+    route_meta1:"среднее время", route_meta2:"городов охвачено", route_meta3:"на дороге",
+    stat1_label:"Городов и районов", stat2_label:"Среднее время забора", stat3_suffix:"лет", stat3_label:"Лет на рынке", stat4_label:"Доставленных посылок",
+    services_eyebrow:"Чем мы занимаемся", services_title:"Наши услуги",
+    service1_title:"Забор и доставка по городу", service1_desc:"Забор и доставка в тот же день, от двери до двери, в пределах города.",
+    service2_title:"Межгородская доставка грузов", service2_desc:"Надёжная доставка между городами и регионами Узбекистана.",
+    service3_title:"Экспресс-доставка день в день", service3_desc:"Срочная посылка? Заберём в течение часа и доставим прямо по адресу.",
+    how_eyebrow:"Процесс", how_title:"Как Это Работает",
+    how1_title:"Оставьте заявку", how1_desc:"Укажите адрес забора, адрес доставки и что вы отправляете.",
+    how2_title:"Мы забираем груз", how2_desc:"Курьер ZBY приезжает к вам, проверяет посылку и берёт её под ответственность.",
+    how3_title:"В пути", how3_desc:"Ваша посылка едет прямо к месту назначения — без лишних остановок.",
+    how4_title:"Доставлено", how4_desc:"Передаём посылку и подтверждаем с вами, что всё доставлено в целости.",
+    why_eyebrow:"Почему ZBY", why_title:"Почему Компании Выбирают ZBY",
+    why1_title:"Реальные люди, реальная забота", why1_desc:"За каждую посылку от начала до конца отвечает конкретный курьер.",
+    why2_title:"Полное покрытие по стране", why2_desc:"От Ташкента до Нукуса — мы работаем во всех городах и районах Узбекистана.",
+    why3_title:"Прозрачные цены", why3_desc:"Вы знаете стоимость ещё до того, как мы заберём посылку. Никаких сюрпризов.",
+    why4_title:"Бережная перевозка", why4_desc:"Хрупкое, крупное или срочное — мы относимся к каждой посылке как к единственной.",
+    coverage_eyebrow:"География", coverage_title:"Где Мы Работаем", coverage_sub:"Курьеры ZBY работают в этих регионах — и их география постоянно растёт.",
+    cta_title:"Есть Что Отправить?", cta_sub:"Скажите, куда это должно попасть — остальное сделаем мы.", cta_button:"Узнать стоимость",
+    contact_eyebrow:"Свяжитесь с нами", contact_title:"Отправим Вашу Посылку в Путь", contact_sub:"Заполните форму — координатор ZBY свяжется с вами и подтвердит забор посылки.",
+    form_name:"Имя", form_phone:"Номер телефона", form_pickup:"Адрес забора", form_dropoff:"Адрес доставки", form_message:"Что вы отправляете?", form_submit:"Отправить заявку",
+    form_note:"Это демо-форма — данные пока никуда не отправляются.",
+    info_address_label:"Адрес", info_address_value:"Ташкент, Узбекистан", info_phone_label:"Телефон", info_email_label:"Email", info_hours_label:"Часы работы", info_hours_value:"Пн–Сб, 9:00–19:00",
+    footer_nav_heading:"Разделы", footer_contact_heading:"Контакты",
+    footer_tagline:"Забор и доставка в любую точку Узбекистана.", footer_copyright:"© 2026 ZBY Cargo. Все права защищены."
+  }
+};
+
+const langNames = { uz:"UZ", ru:"RU", en:"EN" };
+
+function applyLang(lang){
+  const dict = translations[lang] || translations.uz;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-html');
+    if(dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.getElementById('langBtnLabel').textContent = langNames[lang];
+  document.querySelectorAll('#langMenu button, #footerLang button').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('data-lang')===lang);
+  });
+  localStorage.setItem('zby_lang', lang);
+}
+
+function initLang(){
+  const saved = localStorage.getItem('zby_lang');
+  applyLang(saved || 'uz');
+}
+initLang();
+
+document.querySelectorAll('#langMenu button, #footerLang button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    applyLang(btn.getAttribute('data-lang'));
+    document.getElementById('langSwitch').classList.remove('open');
+  });
+});
+
+const langSwitch = document.getElementById('langSwitch');
+document.getElementById('langBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  langSwitch.classList.toggle('open');
+});
+document.addEventListener('click', ()=> langSwitch.classList.remove('open'));
+
+/* ================= HEADER SCROLL ================= */
+const header = document.getElementById('siteHeader');
+window.addEventListener('scroll', ()=>{
+  header.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ================= MOBILE MENU ================= */
+const mobileNav = document.getElementById('mobileNav');
+document.getElementById('menuToggle').addEventListener('click', ()=> mobileNav.classList.add('open'));
+document.getElementById('closeMenu').addEventListener('click', ()=> mobileNav.classList.remove('open'));
+mobileNav.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> mobileNav.classList.remove('open')));
+
+/* ================= FORM DEMO ================= */
+document.getElementById('quoteForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const dict = translations[localStorage.getItem('zby_lang') || 'uz'];
+  const msg = { uz:"So'rovingiz qabul qilindi! (Demo)", ru:"Ваша заявка принята! (Демо)", en:"Your request has been received! (Demo)" };
+  alert(msg[localStorage.getItem('zby_lang') || 'uz']);
+  e.target.reset();
+});
+</script>
+</body>
+</html>
